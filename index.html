@@ -48,8 +48,9 @@ justify-content:center;
 margin-top:20px;
 }
 .box{
-width:50px;
-height:50px;
+width:100%;
+max-width:50px;
+aspect-ratio:1/1;
 border-radius:8px;
 cursor:pointer;
 transition:.2s;
@@ -107,7 +108,8 @@ margin-top:40px;
 <button class="btn" onclick="continueGame()">▶ Continue</button>
 <button class="btn" onclick="openLevels()">📚 Levels</button>
 <button class="btn" onclick="openShop()">🪙 Redeem Coins</button>
-<button class="btn" <a href="contacts.html">📧 Contact</a></button>
+<button class="btn" onclick="location.href='contacts.html'">
+📧 Contact </button>
 </div>
 
 <div id="gamePage" class="page hidden">
@@ -195,8 +197,8 @@ let unlockedLevel =
 parseInt(localStorage.getItem("unlockedLevel")) || 1;
 
 let coins =
-parseInt(localStorage.getItem("coins")) || 0;
-
+parseInt(localStorage.getItem("coins")) || 200;
+  
 let bestTime =
 parseInt(localStorage.getItem("bestTime")) || 0;
 
@@ -293,15 +295,8 @@ document
 }
 
 function openContact(){
-
-hideAll();
-
-document
-.getElementById("contactPage")
-.classList.remove("hidden");
-
+window.location.href="contacts.html";
 }
-
 function continueGame(){
 
 hideAll();
@@ -431,15 +426,13 @@ b=Math.min(255,b+diff);
 box.style.background=
 `rgb(${r},${g},${b})`;
 
-if(level>=90){
+if(level >= 90){
 
-box.style.width="35px";
-box.style.height="35px";
+box.style.maxWidth = "35px";
 
-}else if(level>=80){
+}else if(level >= 80){
 
-box.style.width="40px";
-box.style.height="40px";
+box.style.maxWidth = "40px";
 
 }
 
@@ -484,10 +477,9 @@ function gameOver(){
 
 clearInterval(timerInterval);
 
-if(timerSeconds > bestTime){
+if(bestTime === 0 || timerSeconds < bestTime){
 
-bestTime =
-timerSeconds;
+bestTime = timerSeconds;
 
 }
 
@@ -503,13 +495,13 @@ timerEl.innerText
 
 lives=3;
 
-timerSeconds=0;
+timerSeconds = 0;
+
+timerEl.innerText = "00:00";
 
 goHome();
 
 updateUI();
-
-}
 
 function levelCompleted(){
 
@@ -519,28 +511,21 @@ if(currentLevel < 100){
 
 currentLevel++;
 
-}
-
 if(currentLevel > unlockedLevel){
-
-unlockedLevel =
-currentLevel;
-
+unlockedLevel = currentLevel;
 }
 
 saveData();
-
 updateUI();
+loadLevel(currentLevel);
 
-if(currentLevel===100){
+}else{
 
+saveData();
+updateUI();
 showLegend();
 
-return;
-
 }
-
-loadLevel(currentLevel);
 
 }
 
@@ -675,34 +660,42 @@ SOMU7:50,
 
 function redeemCode(){
 
-const code=
+const code =
 document
 .getElementById("redeemInput")
 .value
-.trim();
+.trim()
+.toUpperCase();
+
+if(localStorage.getItem("used_" + code)){
+
+alert("Code already used");
+return;
+
+}
 
 if(redeemCodes[code]){
 
-coins +=
-redeemCodes[code];
+coins += redeemCodes[code];
+
+localStorage.setItem(
+"used_" + code,
+"true"
+);
 
 saveData();
 
 updateUI();
 
 alert(
-"Added "
-+
-redeemCodes[code]
-+
+"Added " +
+redeemCodes[code] +
 " coins"
 );
 
 }else{
 
-alert(
-"Invalid code"
-);
+alert("Invalid code");
 
 }
 
