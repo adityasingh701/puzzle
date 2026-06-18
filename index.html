@@ -473,6 +473,24 @@ gameOver();
 
 }
 
+  function getResetLevel(level){
+
+if(level >= 99) return 80;
+if(level >= 95) return 70;
+if(level >= 90) return 60;
+if(level >= 80) return 50;
+if(level >= 70) return 45;
+if(level >= 60) return 40;
+if(level >= 50) return 30;
+if(level >= 40) return 20;
+if(level >= 30) return 10;
+if(level >= 20) return 5;
+if(level >= 10) return 1;
+
+return 1;
+
+  }
+
 function gameOver(){
 
 clearInterval(timerInterval);
@@ -493,11 +511,18 @@ currentLevel +
 timerEl.innerText
 );
 
-lives=3;
+const resetLevel = getResetLevel(currentLevel);
+
+currentLevel = resetLevel;
+unlockedLevel = resetLevel;
+
+lives = 10;
 
 timerSeconds = 0;
 
 timerEl.innerText = "00:00";
+
+saveData();
 
 goHome();
 
