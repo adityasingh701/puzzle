@@ -98,7 +98,7 @@ margin-top:40px;
 
 <div class="topbar">
 <div>🏆 <span id="currentLevel">1</span></div>
-<div>❤️ <span id="lives">10</span></div>
+<div>❤️ <span id="lives">5</span></div>
 <div>🪙 <span id="coins">200</span></div>
 <div>⭐ <span id="rank">Beginner</span></div>
 <div>⏱ <span id="timer">00:00</span></div>
@@ -380,12 +380,12 @@ function getDifference(level){
 
 if(level>=95)return 1;
 if(level>=80)return 2;
-if(level>=70)return 3;
-if(level>=60)return 4;
-if(level>=50)return 6;
-if(level>=40)return 8;
-if(level>=30)return 12;
-if(level>=20)return 18;
+if(level>=70)return 4;
+if(level>=60)return 7;
+if(level>=50)return 10;
+if(level>=40)return 15;
+if(level>=30)return 18;
+if(level>=20)return 20;
 if(level>=10)return 25;
 return 40;
 
