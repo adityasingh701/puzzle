@@ -98,8 +98,9 @@ margin-top:40px;
 
 <div class="topbar">
 <div>🏆 <span id="currentLevel">1</span></div>
-<div>❤️ <span id="lives">5</span></div>
+<div>❤️ <span id="lives">10</span></div>
 <div>🪙 <span id="coins">200</span></div>
+<div>⭐ <span id="rank">Beginner</span></div>
 <div>⏱ <span id="timer">00:00</span></div>
 </div>
 
@@ -111,6 +112,13 @@ margin-top:40px;
 <button class="btn" onclick="openShop()">🪙 Redeem Coins</button>
 <button class="btn" onclick="location.href='contacts.html'">
 📧 Contact </button>
+
+<button class="btn" onclick="claimDailyReward()">🎁 Daily Reward</button>
+
+<div class="card">
+<h3>🏆 Leaderboard</h3>
+<p>Highest Level: <span id="highestLevel">1</span></p>
+</div>
 </div>
 
 <div id="gamePage" class="page hidden">
@@ -154,6 +162,8 @@ placeholder="Redeem Code">
 onclick="redeemCode()">
 Redeem
 </button>
+
+<button class="btn" onclick="buyLife()">❤️ Buy 1 Life (20 Coins)</button>
 
 </div>
 <!-- adityasinghprogrammed -->
@@ -229,18 +239,28 @@ document.getElementById("levelTitle");
 const grid =
 document.getElementById("grid");
 
+const rankEl = document.getElementById("rank");
+const highestLevelEl = document.getElementById("highestLevel");
+
+function getRank(level){
+if(level>=100) return "Legend";
+if(level>=80) return "Master";
+if(level>=60) return "Expert";
+if(level>=40) return "Pro";
+if(level>=20) return "Skilled";
+return "Beginner";
+}
+
 updateUI();
 
 function updateUI(){
 
-currentLevelEl.innerText =
-currentLevel;
+currentLevelEl.innerText=currentLevel;
+coinsEl.innerText=coins;
+livesEl.innerText=lives;
 
-coinsEl.innerText =
-coins;
-
-livesEl.innerText =
-lives;
+if(rankEl) rankEl.innerText=getRank(unlockedLevel);
+if(highestLevelEl) highestLevelEl.innerText=localStorage.getItem("highestLevel") || 1;
 
 }
 
@@ -265,6 +285,11 @@ localStorage.setItem(
 "bestTime",
 bestTime
 );
+
+const highest=parseInt(localStorage.getItem("highestLevel"))||1;
+if(unlockedLevel>highest){
+localStorage.setItem("highestLevel",unlockedLevel);
+}
 
 }
 <!-- adityasinghprogrammed -->
@@ -355,12 +380,12 @@ function getDifference(level){
 
 if(level>=95)return 1;
 if(level>=80)return 2;
-if(level>=70)return 5;
-if(level>=60)return 8;
-if(level>=50)return 12;
-if(level>=40)return 16;
-if(level>=30)return 18;
-if(level>=20)return 20;
+if(level>=70)return 3;
+if(level>=60)return 4;
+if(level>=50)return 6;
+if(level>=40)return 8;
+if(level>=30)return 12;
+if(level>=20)return 18;
 if(level>=10)return 25;
 return 40;
 
@@ -728,6 +753,45 @@ redeemCodes[code] +
 alert("Invalid code");
 
 }
+
+}
+
+function claimDailyReward(){
+
+const today=new Date().toDateString();
+const lastClaim=localStorage.getItem("lastClaim");
+
+if(lastClaim===today){
+alert("Reward already claimed today");
+return;
+}
+
+const reward=Math.floor(Math.random()*41)+10;
+coins+=reward;
+
+localStorage.setItem("lastClaim",today);
+
+saveData();
+updateUI();
+
+alert("You received "+reward+" coins!");
+
+}
+
+function buyLife(){
+
+if(coins<20){
+alert("Need 20 coins");
+return;
+}
+
+coins-=20;
+lives++;
+
+saveData();
+updateUI();
+
+alert("1 Life Added");
 
 }
 
